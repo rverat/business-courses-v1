@@ -4,14 +4,14 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/coursesdb
+      uri: mongodb://localhost:27017/coursesdb #connection to mongo db
   application:
     name: business-courses-v1
   redis:
-    host: 172.17.0.1 #localhost #192.168.0.102
-    port: 6379
+    host: 172.17.0.1 #using docker ip for connect to redis container
+    port: 6379 #port redis container
     ttl:
-      seconds: 60
+      seconds: 60 #after this time the data will be delete
 
 logging:
   level:

@@ -2,10 +2,7 @@ package com.thedevlair.business.courses.web;
 
 import com.thedevlair.business.courses.courses.model.business.Course;
 import com.thedevlair.business.courses.courses.service.CourseService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

@@ -8,6 +8,11 @@ Requirements
 .[!IMPORTANT].
     Java 21
     MongoDB
+    Docker
+
+Create MongoDB and start Redis on docker link example:
+ https://www.thedevlair.com/blog/post/spring-web-flux-mongodb-redis-in-docker
+
 
 Configuration
 
