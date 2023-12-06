@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/coursesdb
+  application:
+    name: business-courses-v1
+
+logging:
+  level:
+    org.springframework.data.mongodb.core: DEBUG
+
+spring-doc.openapi:
+  enabled: true
+  ui:
+    path: /api-docs
+
+
