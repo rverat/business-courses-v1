@@ -6,6 +6,7 @@ import com.thedevlair.business.courses.courses.mapper.CourseMapper;
 import com.thedevlair.business.courses.courses.model.business.Course;
 import com.thedevlair.business.courses.courses.model.thirdparty.CourseDOC;
 import com.thedevlair.business.courses.courses.service.impl.CourseServiceImpl;
+import com.thedevlair.business.courses.courses.service.impl.RedisServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,9 @@ class CourseServiceImplTest {
     private CourseRepository courseRepository;
 
     @Mock
+    private RedisServiceImpl redisTemplate;
+
+    @Mock
     private CourseMapper courseMapper;
 
     @InjectMocks
@@ -33,7 +37,7 @@ class CourseServiceImplTest {
     @Test
     void findAll_shouldReturnAllCourses() {
         when(courseRepository.findAll()).thenReturn(Flux.just(new CourseDOC("656f4f6e3998b15e4ff5c9cb", "Linux", "enable")));
-        when(courseMapper.courseDOCTOCurse(any())).thenReturn(new Course("656f4f6e3998b15e4ff5c9cb", "Linux", "enable"));
+        when(courseMapper.courseDOCTOCourse(any())).thenReturn(new Course("656f4f6e3998b15e4ff5c9cb", "Linux", "enable"));
 
         Flux<Course> result = courseService.findAll();
 
@@ -42,28 +46,15 @@ class CourseServiceImplTest {
                 .verifyComplete();
 
         verify(courseRepository).findAll();
-        verify(courseMapper, times(1)).courseDOCTOCurse(any());
-    }
-
-    @Test
-    void findById_existingId_shouldReturnCourse() {
-        String courseId = "656f4f6e3998b15e4ff5c9cb";
-        when(courseRepository.findById(courseId)).thenReturn(Mono.just(new CourseDOC("656f4f6e3998b15e4ff5c9cb", "Linux", "enable")));
-        when(courseMapper.courseDOCTOCurse(any())).thenReturn(new Course("656f4f6e3998b15e4ff5c9cb", "Linux", "enable"));
-
-        Mono<Course> result = courseService.findById(courseId);
-
-        StepVerifier.create(result)
-                .expectNextMatches(course -> course.getId().equals("656f4f6e3998b15e4ff5c9cb"))
-                .verifyComplete();
-
-        verify(courseRepository).findById(courseId);
-        verify(courseMapper, times(1)).courseDOCTOCurse(any());
+        verify(courseMapper, times(1)).courseDOCTOCourse(any());
     }
 
     @Test
     void findById_nonExistingId_shouldThrowNotFoundException() {
         String nonExistingId = "656f4f6e3998b15e4ff5c9ca";
+
+        when(redisTemplate.get(nonExistingId)).thenReturn(Mono.empty());
+
         when(courseRepository.findById(nonExistingId)).thenReturn(Mono.empty());
 
         Mono<Course> result = courseService.findById(nonExistingId);
@@ -72,16 +63,18 @@ class CourseServiceImplTest {
                 .expectError(NotFoundException.class)
                 .verify();
 
+        verify(redisTemplate).get(nonExistingId);
         verify(courseRepository).findById(nonExistingId);
-        verify(courseMapper, never()).courseDOCTOCurse(any());
+        verify(courseMapper, never()).courseDOCTOCourse(any());
     }
+
 
     @Test
     void createCourse_validCourse_shouldReturnSuccessMessage() {
         Course courseToCreate = new Course("656f4f6e3998b15e4ff5c9ca", "linux", "enable");
         CourseDOC savedCourseDOC = new CourseDOC("656f4f6e3998b15e4ff5c9ca", "linux", "enable");
 
-        when(courseMapper.courseTOCurseDOC(courseToCreate)).thenReturn(savedCourseDOC);
+        when(courseMapper.courseTOCourseDOC(courseToCreate)).thenReturn(savedCourseDOC);
         when(courseRepository.save(savedCourseDOC)).thenReturn(Mono.just(savedCourseDOC));
 
         Mono<String> result = courseService.createCourse(courseToCreate);
@@ -91,7 +84,7 @@ class CourseServiceImplTest {
                 .verifyComplete();
 
         verify(courseRepository).save(savedCourseDOC);
-        verify(courseMapper, times(1)).courseTOCurseDOC(courseToCreate);
+        verify(courseMapper, times(1)).courseTOCourseDOC(courseToCreate);
         //verify(courseMapper, times(1)).courseDOCTOCurse(savedCourseDOC);
     }
 

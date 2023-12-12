@@ -10,9 +10,9 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
-    Course courseDOCTOCurse(CourseDOC courseDOC);
+    Course courseDOCTOCourse(CourseDOC courseDOC);
 
-    CourseDOC courseTOCurseDOC(Course course);
+    CourseDOC courseTOCourseDOC(Course course);
 
     // Method for update course existing with values of Course
     @Mapping(target = "id", ignore = true)// Ignore id

@@ -1,5 +1,6 @@
 package com.thedevlair.business.courses.courses.model.thirdparty;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +16,10 @@ public class CourseDOC {
     @Id
     private String id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String state;
 
 }
